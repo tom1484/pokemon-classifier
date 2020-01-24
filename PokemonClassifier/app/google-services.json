@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "971539274368",
+    "firebase_url": "https://pokemonclassifier-391a4.firebaseio.com",
+    "project_id": "pokemonclassifier-391a4",
+    "storage_bucket": "pokemonclassifier-391a4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:971539274368:android:bb0a46a21922fa0003e465",
+        "android_client_info": {
+          "package_name": "com.example.pokemonclassifier"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "971539274368-96f101kdjfrirrdorkleesh7bfa7otok.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7dsxr7DnuKXA_urW6PO_SieGVOg1UixU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "971539274368-96f101kdjfrirrdorkleesh7bfa7otok.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

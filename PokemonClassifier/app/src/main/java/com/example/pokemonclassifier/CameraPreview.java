@@ -50,19 +50,19 @@ import java.util.concurrent.TimeUnit;
 
 public class CameraPreview extends TextureView {
     private static final String TAG = "TAG";
-    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();//從螢幕旋轉轉換為JPEG方向
-    private static final int MAX_PREVIEW_WIDTH = 1920;//Camera2 API 保證的最大預覽寬高
+    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+    private static final int MAX_PREVIEW_WIDTH = 1920;
     private static final int MAX_PREVIEW_HEIGHT = 1080;
-    private static final int STATE_PREVIEW = 0;//顯示相機預覽
-    private static final int STATE_WAITING_LOCK = 1;//焦點鎖定中
-    private static final int STATE_WAITING_PRE_CAPTURE = 2;//拍照中
-    private static final int STATE_WAITING_NON_PRE_CAPTURE = 3;//其它狀態
-    private static final int STATE_PICTURE_TAKEN = 4;//拍照完畢
+    private static final int STATE_PREVIEW = 0;
+    private static final int STATE_WAITING_LOCK = 1;
+    private static final int STATE_WAITING_PRE_CAPTURE = 2;
+    private static final int STATE_WAITING_NON_PRE_CAPTURE = 3;
+    private static final int STATE_PICTURE_TAKEN = 4;
     private int mState = STATE_PREVIEW;
     private int mRatioWidth = 0, mRatioHeight = 0;
     private int mSensorOrientation;
     private boolean mFlashSupported;
-    private Semaphore mCameraOpenCloseLock = new Semaphore(1);//使用訊號量 Semaphore 進行多執行緒任務排程
+    private Semaphore mCameraOpenCloseLock = new Semaphore(1);
     private Activity activity;
     private File mFile;
     private HandlerThread mBackgroundThread;
@@ -114,8 +114,6 @@ public class CameraPreview extends TextureView {
     }
     public void onResume(Activity activity) {
         this.activity = activity;
-        startBackgroundThread();
-//當Activity或Fragment OnResume()時,可以沖洗開啟一個相機並開始預覽,否則,這個Surface已經準備就緒
         if (this.isAvailable()) {
             openCamera(this.getWidth(), this.getHeight());
         } else {
@@ -142,11 +140,6 @@ public class CameraPreview extends TextureView {
     }
     public void takePicture() {
         capturingStillPicture = true;
-    }
-    private void startBackgroundThread() {
-        mBackgroundThread = new HandlerThread("CameraBackground");
-        mBackgroundThread.start();
-        mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
     }
     private void stopBackgroundThread() {
         mBackgroundThread.quitSafely();
@@ -217,13 +210,11 @@ public class CameraPreview extends TextureView {
                 case STATE_WAITING_LOCK: {
                     Integer afState = result.get(CaptureResult.CONTROL_AF_STATE);
                     if (afState == null) {
-//                        captureStillPicture();
                     } else if (CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED == afState ||
                             CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED == afState) {
                         Integer aeState = result.get(CaptureResult.CONTROL_AE_STATE);
                         if (aeState == null || aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED) {
                             mState = STATE_PICTURE_TAKEN;
-//                            captureStillPicture();
                         } else {
                             runPreCaptureSequence();
                         }
@@ -243,7 +234,6 @@ public class CameraPreview extends TextureView {
                     Integer aeState = result.get(CaptureResult.CONTROL_AE_STATE);
                     if (aeState == null || aeState != CaptureResult.CONTROL_AE_STATE_PRECAPTURE) {
                         mState = STATE_PICTURE_TAKEN;
-//                        captureStillPicture();
                     }
                     break;
                 }
@@ -334,7 +324,7 @@ public class CameraPreview extends TextureView {
         try {
             for (String cameraId : manager.getCameraIdList()) {
                 CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
-// 在這個例子中不使用前置攝像頭
+
                 Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
                 if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
                     continue;
@@ -469,70 +459,6 @@ public class CameraPreview extends TextureView {
             e.printStackTrace();
         }
     }
-
-//    private int getOrientation(int rotation) {
-//        return (ORIENTATIONS.get(rotation) + mSensorOrientation + 270) % 360;
-//    }
-
-//    private void lockFocus() {
-//        try {
-//
-//            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_START);
-//
-//            mState = STATE_WAITING_LOCK;
-//            mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback, mBackgroundHandler);
-//        } catch (CameraAccessException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-//    private void unlockFocus() {
-//        try {
-//            mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
-//                    CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
-//            setAutoFlash(mPreviewRequestBuilder);
-//            mCaptureSession.capture(mPreviewRequestBuilder.build(), mCaptureCallback,
-//                    mBackgroundHandler);
-//            mState = STATE_PREVIEW;
-//            mCaptureSession.setRepeatingRequest(mPreviewRequest, mCaptureCallback,
-//                    mBackgroundHandler);
-//        } catch (CameraAccessException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-//    private void captureStillPicture() {
-//        try {
-//            if (null == activity || null == mCameraDevice) {
-//                return;
-//            }
-//            final CaptureRequest.Builder captureBuilder =
-//                    mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
-//            captureBuilder.addTarget(mImageReader.getSurface());
-//            captureBuilder.set(CaptureRequest.CONTROL_AF_MODE,
-//                    CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-//            setAutoFlash(captureBuilder);
-//// 方向
-//            int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
-//            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, getOrientation(rotation));
-//            CameraCaptureSession.CaptureCallback captureCallback
-//                    = new CameraCaptureSession.CaptureCallback() {
-//                @Override
-//                public void onCaptureCompleted(@NonNull CameraCaptureSession session,
-//                                               @NonNull CaptureRequest request,
-//                                               @NonNull TotalCaptureResult result) {
-//                    Toast.makeText(getContext(), "Saved: " + mFile, Toast.LENGTH_SHORT).show();
-//                    Log.d(TAG, mFile.toString());
-//                    unlockFocus();
-//                }
-//            };
-//            mCaptureSession.stopRepeating();
-//            mCaptureSession.abortCaptures();
-//            mCaptureSession.capture(captureBuilder.build(), captureCallback, null);
-//        } catch (CameraAccessException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     private void runPreCaptureSequence() {
         try {

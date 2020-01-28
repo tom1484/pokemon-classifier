@@ -5,7 +5,6 @@ This classifier is built by AndroidStudio with TFLite model which is trained in 
 * [Dataset](https://github.com/tom1484/pokemon-classifier#dataset)
   * [Features](https://github.com/tom1484/pokemon-classifier#features)
   * [Download](https://github.com/tom1484/pokemon-classifier#download)
-
 * [Model building](https://github.com/tom1484/pokemon-classifier#model-building)
   * [Prepare data](https://github.com/tom1484/pokemon-classifier#prepare-data)
   * [MobileNet](https://github.com/tom1484/pokemon-classifier#mobilenet)
@@ -15,6 +14,7 @@ This classifier is built by AndroidStudio with TFLite model which is trained in 
 * [Application](https://github.com/tom1484/pokemon-classifier#application)
   * [Features](https://github.com/tom1484/pokemon-classifier#features-1)
   * [Classification](https://github.com/tom1484/pokemon-classifier#classification)
+* [Result](https://github.com/tom1484/pokemon-classifier#result)
 
 ## Dataset
 

@@ -293,3 +293,6 @@ interpreter.run(inputs, inputOutputOptions)
             });
 ```
 
+### Result
+
+See the result of application [here](https://drive.google.com/file/d/1HgIrvtW8sPcwJKx4yRg_zsS3dYYzUViN/view?usp=sharing).
